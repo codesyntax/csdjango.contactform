@@ -2,7 +2,7 @@
 
 <h1>Kontaktua</h1>
 
-<form action="/contact/" method="POST">
+<form action="{{request.path}}" method="POST">
 {{ form.as_p }}
 <input type="submit" value="Submit" />
 </form>
