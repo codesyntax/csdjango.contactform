@@ -246,6 +246,7 @@ class AkismetContactForm(ContactForm):
         Perform Akismet validation of the message.
         
         """
+        
         if 'body' in self.cleaned_data and getattr(settings, 'AKISMET_API_KEY', ''):
             from akismet import Akismet
             from django.utils.encoding import smart_str
@@ -253,6 +254,8 @@ class AkismetContactForm(ContactForm):
                                   blog_url='http://%s/' % Site.objects.get_current().domain)
             if akismet_api.verify_key():
                 akismet_data = { 'comment_type': 'comment',
+                                 'comment_author':self.cleaned_data['name'],
+                                 'comment_author_email':self.cleaned_data['email'],
                                  'referer': self.request.META.get('HTTP_REFERER', ''),
                                  'user_ip': self.request.META.get('REMOTE_ADDR', ''),
                                  'user_agent': self.request.META.get('HTTP_USER_AGENT', '') }
