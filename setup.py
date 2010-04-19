@@ -23,7 +23,7 @@ setup(name='csdjango.contactform',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'setuptools',
+          'setuptools','akismet'
           # -*- Extra requirements: -*-
       ],
       entry_points="""
