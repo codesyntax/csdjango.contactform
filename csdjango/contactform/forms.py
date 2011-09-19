@@ -254,11 +254,12 @@ class AkismetContactForm(ContactForm):
                                   blog_url='http://%s/' % Site.objects.get_current().domain)
             if akismet_api.verify_key():
                 akismet_data = { 'comment_type': 'comment',
-                                 'comment_author':self.cleaned_data['name'],
-                                 'comment_author_email':self.cleaned_data['email'],
+                                 'comment_author':self.cleaned_data['name'].encode('utf-8'),
+                                 'comment_author_email':self.cleaned_data['email'].encode('utf-8'),
                                  'referer': self.request.META.get('HTTP_REFERER', ''),
                                  'user_ip': self.request.META.get('REMOTE_ADDR', ''),
                                  'user_agent': self.request.META.get('HTTP_USER_AGENT', '') }
+                
                 if akismet_api.comment_check(smart_str(self.cleaned_data['body']), data=akismet_data, build_data=True):
                     raise forms.ValidationError(_(u"Akismet thinks this message is spam"))
         return self.cleaned_data['body']
