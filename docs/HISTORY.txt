@@ -4,5 +4,6 @@ Changelog
 0.1 - Unreleased
 ----------------
 
-* Initial release
+- Updating version on trunk after tagging [urtzai <uodriozola@codesyntax.com>]
+
 

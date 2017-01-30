@@ -23,8 +23,9 @@ setup(name='csdjango.contactform',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'setuptools','akismet'
-          # -*- Extra requirements: -*-
+          'setuptools',
+          'akismet',
+          'Django>=1.10',
       ],
       entry_points="""
       # -*- Entry points: -*-
