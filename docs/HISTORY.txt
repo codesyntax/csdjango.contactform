@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1 - Unreleased
+1.0 (2017-01-30)
 ----------------
 
 - Update changelog [Urtzi Odriozola <uodriozola@codesyntax.com>]
