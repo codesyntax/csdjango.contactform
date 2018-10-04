@@ -1,10 +1,11 @@
 Changelog
 =========
 
-1.1 (unreleased)
+1.1 (2018-10-04)
 ----------------
 
-- Nothing changed yet.
+- pep8.
+- Fix translations
 
 
 1.0 (2017-01-30)
