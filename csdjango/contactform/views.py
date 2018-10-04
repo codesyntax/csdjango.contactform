@@ -3,7 +3,7 @@ View which can render and send email from a contact form.
 
 """
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template import RequestContext
@@ -11,10 +11,14 @@ from django.template import RequestContext
 from csdjango.contactform.forms import ContactForm
 
 
-def contact_form(request, form_class=ContactForm,
-                 template_name='contact_form/contact_form.html',
-                 success_url=None, extra_context=None,
-                 fail_silently=False):
+def contact_form(
+    request,
+    form_class=ContactForm,
+    template_name="contact_form/contact_form.html",
+    success_url=None,
+    extra_context=None,
+    fail_silently=False,
+):
     """
     Render a contact form, validate its input and send an email
     from it.
@@ -70,10 +74,10 @@ def contact_form(request, form_class=ContactForm,
     # perform the reverse lookup we need access to contact_form/urls.py,
     # but contact_form/urls.py in turn imports from this module.
     #
-    
+
     if success_url is None:
-        success_url = reverse('contact_form_sent')
-    if request.method == 'POST':
+        success_url = reverse("contact_form_sent")
+    if request.method == "POST":
         form = form_class(data=request.POST, files=request.FILES, request=request)
         if form.is_valid():
             form.save(fail_silently=fail_silently)
@@ -86,5 +90,5 @@ def contact_form(request, form_class=ContactForm,
     context = RequestContext(request)
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
-    
-    return render(request, template_name, { 'form': form })
+    return render(request, template_name, {"form": form})
+
