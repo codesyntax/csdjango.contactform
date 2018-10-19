@@ -4,7 +4,7 @@ Changelog
 1.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Pick akismet library version to 1.0.1.
 
 
 1.0.1 (2018-10-19)
