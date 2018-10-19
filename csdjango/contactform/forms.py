@@ -18,7 +18,7 @@ from django.utils.translation import ugettext as _
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
 # in the HTML. Your mileage may vary.
-attrs_dict = { 'class': 'required' }
+attrs_dict = {"class": "required"}
 
 
 class ContactForm(forms.Form):
@@ -133,28 +133,31 @@ class ContactForm(forms.Form):
     pass silently, unless explicitly silenced").
     
     """
+
     def __init__(self, data=None, files=None, request=None, *args, **kwargs):
         if request is None:
             raise TypeError("Keyword argument 'request' must be supplied")
         super(ContactForm, self).__init__(data=data, files=files, *args, **kwargs)
         self.request = request
-    
-    name = forms.CharField(max_length=100,
-                           widget=forms.TextInput(attrs=attrs_dict),
-                           label=_(u'Your name'))
-    email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict,
-                                                               maxlength=200)),
-                             label=_(u'Your email address'))
-    body = forms.CharField(widget=forms.Textarea(attrs=attrs_dict),
-                              label=_(u'Your message'))
-    
+
+    name = forms.CharField(
+        max_length=100, widget=forms.TextInput(attrs=attrs_dict), label=_("Your name")
+    )
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=200)),
+        label=_("Your email address"),
+    )
+    body = forms.CharField(
+        widget=forms.Textarea(attrs=attrs_dict), label=_("Your message")
+    )
+
     from_email = settings.DEFAULT_FROM_EMAIL
-    
+
     recipient_list = [mail_tuple[1] for mail_tuple in settings.MANAGERS]
 
     subject_template_name = "contact_form/contact_form_subject.txt"
-    
-    template_name = 'contact_form/contact_form.txt'
+
+    template_name = "contact_form/contact_form.txt"
 
     def message(self):
         """
@@ -165,18 +168,18 @@ class ContactForm(forms.Form):
             template_name = self.template_name()
         else:
             template_name = self.template_name
-        return loader.render_to_string(template_name,
-                                       self.get_context())
-    
+        return loader.render_to_string(template_name, self.get_context())
+
     def subject(self):
         """
         Render the subject of the message to a string.
         
         """
-        subject = loader.render_to_string(self.subject_template_name,
-                                          self.get_context())
-        return ''.join(subject.splitlines())
-    
+        subject = loader.render_to_string(
+            self.subject_template_name, self.get_context()
+        )
+        return "".join(subject.splitlines())
+
     def get_context(self):
         """
         Return the context used to render the templates for the email
@@ -195,10 +198,10 @@ class ContactForm(forms.Form):
         """
         if not self.is_valid():
             raise ValueError("Cannot generate Context from invalid contact form")
-        return RequestContext(self.request,
-                              dict(self.cleaned_data,
-                                   site=Site.objects.get_current()))
-    
+        return dict(
+            self.cleaned_data, request=self.request, site=Site.objects.get_current()
+        )
+
     def get_message_dict(self):
         """
         Generate the various parts of the message and return them in a
@@ -219,11 +222,11 @@ class ContactForm(forms.Form):
         if not self.is_valid():
             raise ValueError(_("Message cannot be sent from invalid contact form"))
         message_dict = {}
-        for message_part in ('from_email', 'message', 'recipient_list', 'subject'):
+        for message_part in ("from_email", "message", "recipient_list", "subject"):
             attr = getattr(self, message_part)
             message_dict[message_part] = callable(attr) and attr() or attr
         return message_dict
-    
+
     def save(self, fail_silently=False):
         """
         Build and send the email message.
@@ -241,30 +244,46 @@ class AkismetContactForm(ContactForm):
     Akismet API key.
     
     """
-    
+
     def clean_body(self):
         """
         Perform Akismet validation of the message.
         
         """
-        
-        if 'body' in self.cleaned_data and getattr(settings, 'AKISMET_API_KEY', ''):
+
+        if "body" in self.cleaned_data and getattr(settings, "AKISMET_API_KEY", ""):
             from akismet import Akismet
             from django.utils.encoding import smart_str
-            akismet_api = Akismet(key=settings.AKISMET_API_KEY,
-                                  blog_url='http://%s/' % Site.objects.get_current().domain)
-            if self.cleaned_data.get('email',''):
-            	
-                if akismet_api.verify_key():
-                    akismet_data = { 'comment_type': 'comment',
-                                 'comment_author':self.cleaned_data['name'].encode('utf-8'),
-                                 'comment_author_email':self.cleaned_data['email'].encode('utf-8'),
-                                 'referer': self.request.META.get('HTTP_REFERER', ''),
-                                 'user_ip': self.request.META.get('REMOTE_ADDR', ''),
-                                 'user_agent': self.request.META.get('HTTP_USER_AGENT', '') }
-                
-                    if akismet_api.comment_check(smart_str(self.cleaned_data['body']), data=akismet_data, build_data=True):
-                        raise forms.ValidationError(_(u"Akismet thinks this message is spam"))
+
+            akismet_api = Akismet(
+                key=settings.AKISMET_API_KEY,
+                blog_url="http://%s/" % Site.objects.get_current().domain,
+            )
+            if self.cleaned_data.get("email", ""):
+
+                if akismet_api.verify_key(
+                    settings.AKISMET_API_KEY,
+                    "http://%s/" % Site.objects.get_current().domain,
+                ):
+                    akismet_data = {
+                        "comment_type": "comment",
+                        "comment_author": self.cleaned_data["name"].encode("utf-8"),
+                        "comment_author_email": self.cleaned_data["email"].encode(
+                            "utf-8"
+                        ),
+                        "comment_content": smart_str(self.cleaned_data["body"]),
+                        "referer": self.request.META.get("HTTP_REFERER", ""),
+                    }
+
+                    if akismet_api.comment_check(
+                        user_ip=akismet_data.get("user_ip"),
+                        user_agent=akismet_data.get("user_agent"),
+                        **akismet_data
+                    ):
+                        raise forms.ValidationError(
+                            _("Akismet thinks this message is spam")
+                        )
             else:
                 return False
-        return self.cleaned_data['body']
+        return self.cleaned_data["body"]
+
