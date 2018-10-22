@@ -4,7 +4,7 @@ Changelog
 1.0.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Remove duplicate params.
 
 
 1.0.4 (2018-10-22)
