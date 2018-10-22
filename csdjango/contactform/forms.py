@@ -273,6 +273,8 @@ class AkismetContactForm(ContactForm):
                         ),
                         "comment_content": smart_str(self.cleaned_data["body"]),
                         "referer": self.request.META.get("HTTP_REFERER", ""),
+                        "user_ip": self.request.META.get("HTTP_REAL_IP", "")
+                        "user_agent": self.request.META.get("HTTP_USER_AGENT", "")
                     }
 
                     if akismet_api.comment_check(
