@@ -277,11 +277,7 @@ class AkismetContactForm(ContactForm):
                         "user_agent": self.request.META.get("HTTP_USER_AGENT", ""),
                     }
 
-                    if akismet_api.comment_check(
-                        user_ip=akismet_data.get("user_ip"),
-                        user_agent=akismet_data.get("user_agent"),
-                        **akismet_data
-                    ):
+                    if akismet_api.comment_check(**akismet_data):
                         raise forms.ValidationError(
                             _("Akismet thinks this message is spam")
                         )
