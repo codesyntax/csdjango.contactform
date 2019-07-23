@@ -24,7 +24,7 @@ setup(
     namespace_packages=["csdjango"],
     include_package_data=True,
     zip_safe=False,
-    install_requires=["setuptools", "akismet", "Django>=2, <=2.2"],
+    install_requires=["setuptools", "akismet", "Django>=2"],
     entry_points="""
       # -*- Entry points: -*-
       """,
