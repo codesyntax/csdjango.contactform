@@ -9,7 +9,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
 from django.template import loader
 
@@ -21,9 +21,9 @@ class ContactForm(forms.Form):
 
     """
 
-    name = forms.CharField(max_length=100, label=_(u"Your name"))
-    email = forms.EmailField(max_length=200, label=_(u"Your email address"))
-    body = forms.CharField(widget=forms.Textarea, label=_(u"Your message"))
+    name = forms.CharField(max_length=100, label=_("Your name"))
+    email = forms.EmailField(max_length=200, label=_("Your email address"))
+    body = forms.CharField(widget=forms.Textarea, label=_("Your message"))
 
     from_email = settings.DEFAULT_FROM_EMAIL
 
@@ -136,7 +136,7 @@ class AkismetContactForm(ContactForm):
 
     """
 
-    SPAM_MESSAGE = _(u"Your message was classified as spam.")
+    SPAM_MESSAGE = _("Your message was classified as spam.")
 
     def _is_unit_test(self):
         """
@@ -173,4 +173,3 @@ class AkismetContactForm(ContactForm):
             if akismet_api.comment_check(**akismet_kwargs):
                 raise forms.ValidationError(self.SPAM_MESSAGE)
             return self.cleaned_data["body"]
-

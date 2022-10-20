@@ -59,7 +59,7 @@ def contact_form(
 
     ``form``
         The form instance.
-    
+
     **Template:**
 
     The value of the ``template_name`` keyword argument, or
@@ -91,4 +91,3 @@ def contact_form(
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
     return render(request, template_name, {"form": form})
-
